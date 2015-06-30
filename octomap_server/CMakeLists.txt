@@ -47,12 +47,15 @@ set(LINK_LIBS
   ${PCL_LIBRARIES}
 )
 
-add_library(${PROJECT_NAME} src/OctomapServer.cpp src/OctomapServerMultilayer.cpp src/TrackingOctomapServer.cpp)
+add_library(${PROJECT_NAME} src/OctomapServer.cpp src/OctomapServerMultilayer.cpp src/TrackingOctomapServer.cpp src/ColorOctomapServer.cpp)
 target_link_libraries(${PROJECT_NAME} ${LINK_LIBS})
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_gencfg)
 
 add_executable(octomap_server_node src/octomap_server_node.cpp)
 target_link_libraries(octomap_server_node ${PROJECT_NAME} ${LINK_LIBS})
+
+add_executable(octomap_color_server_node src/octomap_color_server_node.cpp)
+target_link_libraries(octomap_color_server_node ${PROJECT_NAME} ${LINK_LIBS})
 
 add_executable(octomap_server_static src/octomap_server_static.cpp)
 target_link_libraries(octomap_server_static ${PROJECT_NAME} ${LINK_LIBS})
