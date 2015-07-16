@@ -676,8 +676,11 @@ bool OctomapServer::octomapBinarySrv(OctomapSrv::Request  &req,
   ROS_INFO("Sending binary map data on service request");
   res.map.header.frame_id = m_worldFrameId;
   res.map.header.stamp = ros::Time::now();
+  //octomap::OcTree binary_octree = dynamic_cast<octomap::OcTree*>(*m_octree);
   if (!octomap_msgs::binaryMapToMsg(*m_octree, res.map))
     return false;
+
+  res.map.id = "OcTree"; // hard-coded, should be changed in octomap_msgs
 
   double total_elapsed = (ros::WallTime::now() - startTime).toSec();
   ROS_INFO("Binary octomap sent in %f sec", total_elapsed);
