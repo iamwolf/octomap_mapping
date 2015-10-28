@@ -1,4 +1,4 @@
-octomap_mapping
+octomap_mapping [![Build Status](https://travis-ci.org/iamwolf/octomap_mapping.svg?branch=indigo-devel)](https://travis-ci.org/iamwolf/octomap_mapping)
 ===============
 
 ROS stack for mapping with OctoMap, contains the octomap_server package.
