@@ -35,14 +35,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+#include <string>
 #include <ros/ros.h>
 #include <octomap_server/OctomapServer.h>
 
 #define USAGE "\nUSAGE: octomap_server <map.[bt|ot]>\n" \
         "  map.bt: inital octomap 3D map file to read\n"
 
-using namespace octomap_server;
+using octomap_server;
 
 int main(int argc, char** argv)
 {
