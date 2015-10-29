@@ -13,11 +13,11 @@ set(PACKAGE_DEPENDENCIES
   octomap_ros
   octomap_msgs
   dynamic_reconfigure
-  nodelet  
+  nodelet
 )
 
 
-find_package(catkin REQUIRED COMPONENTS ${PACKAGE_DEPENDENCIES})
+find_package(catkin REQUIRED COMPONENTS ${PACKAGE_DEPENDENCIES} roslint)
 
 find_package(PCL REQUIRED QUIET COMPONENTS common sample_consensus io segmentation filters)
 
@@ -99,3 +99,5 @@ install(DIRECTORY launch/
 
 install(FILES nodelet_plugins.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
+roslint_cpp()
