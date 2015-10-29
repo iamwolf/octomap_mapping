@@ -31,6 +31,7 @@
 #include <octomap_msgs/conversions.h>
 #include <octomap/octomap.h>
 #include <fstream>
+#include <string>
 
 #include <octomap_msgs/GetOctomap.h>
 using octomap_msgs::GetOctomap;
@@ -39,8 +40,8 @@ using octomap_msgs::GetOctomap;
                 "  -f: Query for the full occupancy octree, instead of just the compact binary one\n" \
     "  mapfile.bt: filename of map to be saved (.bt: binary tree, .ot: general octree)\n"
 
-using namespace std;
-using namespace octomap;
+using std;
+using octomap;
 
 class MapSaver
 {
@@ -62,7 +63,6 @@ public:
 
     if (n.ok())  // skip when CTRL-C
     {
-
       AbstractOcTree* tree = octomap_msgs::msgToMap(resp.map);
       AbstractOccupancyOcTree* octree = NULL;
       if (tree)
@@ -99,8 +99,6 @@ public:
         {
           ROS_ERROR("Unknown file extension, must be either .bt or .ot");
         }
-
-
       }
       else
       {
@@ -108,7 +106,6 @@ public:
       }
 
       delete octree;
-
     }
   }
 };
@@ -143,5 +140,3 @@ int main(int argc, char** argv)
 
   exit(0);
 }
-
-
