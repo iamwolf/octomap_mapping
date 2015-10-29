@@ -30,6 +30,9 @@
 #ifndef OCTOMAP_SERVER_OCTOMAPSERVER_H
 #define OCTOMAP_SERVER_OCTOMAPSERVER_H
 
+#include <algorithm>
+#include <string>
+
 #include <ros/ros.h>
 #include <visualization_msgs/MarkerArray.h>
 #include <nav_msgs/OccupancyGrid.h>
@@ -263,6 +266,6 @@ protected:
   bool m_projectCompleteMap;
   bool m_useColoredMap;
 };
-}
+}  // namespace octomap_server
 
 #endif
