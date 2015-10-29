@@ -31,6 +31,7 @@
 #include <octomap_msgs/conversions.h>
 #include <octomap/octomap.h>
 #include <fstream>
+#include <string>
 
 #include <octomap_msgs/GetOctomap.h>
 using octomap_msgs::GetOctomap;
@@ -38,16 +39,15 @@ using octomap_msgs::GetOctomap;
 #define USAGE "\nUSAGE: octomap_server_static <mapfile.[bt|ot]>\n" \
     "  mapfile.bt: OctoMap filename to be loaded (.bt: binary tree, .ot: general octree)\n"
 
-using namespace std;
-using namespace octomap;
+using std;
+using octomap;
 
 class OctomapServerStatic
 {
 public:
-  OctomapServerStatic(const std::string& filename)
+  explicit OctomapServerStatic(const std::string& filename)
     : m_octree(NULL), m_worldFrameId("/map")
   {
-
     ros::NodeHandle private_nh("~");
     private_nh.param("frame_id", m_worldFrameId, m_worldFrameId);
 
@@ -78,7 +78,6 @@ public:
       }
 
       m_octree = dynamic_cast<AbstractOccupancyOcTree*>(tree);
-
     }
     else
     {
@@ -98,13 +97,10 @@ public:
 
     m_octomapBinaryService = m_nh.advertiseService("octomap_binary", &OctomapServerStatic::octomapBinarySrv, this);
     m_octomapFullService = m_nh.advertiseService("octomap_full", &OctomapServerStatic::octomapFullSrv, this);
-
   }
 
   ~OctomapServerStatic()
   {
-
-
   }
 
   bool octomapBinarySrv(GetOctomap::Request  &req,
@@ -138,7 +134,6 @@ private:
   ros::NodeHandle m_nh;
   std::string m_worldFrameId;
   AbstractOccupancyOcTree* m_octree;
-
 };
 
 int main(int argc, char** argv)
@@ -167,5 +162,3 @@ int main(int argc, char** argv)
 
   exit(0);
 }
-
-
