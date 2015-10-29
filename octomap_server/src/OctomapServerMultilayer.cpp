@@ -27,19 +27,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <algorithm>
+#include <vector>
 #include <octomap_server/OctomapServerMultilayer.h>
 
-using namespace octomap;
+using octomap;
 
 namespace octomap_server
 {
-
-
-
 OctomapServerMultilayer::OctomapServerMultilayer(ros::NodeHandle private_nh_)
   : OctomapServer(private_nh_)
 {
-
   // TODO: callback for arm_navigation attached objects was removed, is
   // there a replacement functionality?
 
@@ -92,8 +90,6 @@ OctomapServerMultilayer::OctomapServerMultilayer(ros::NodeHandle private_nh_)
   m_armLinkOffsets.push_back(0.16);
   m_armLinks.push_back("r_wrist_flex_link");
   m_armLinkOffsets.push_back(0.05);
-
-
 }
 
 OctomapServerMultilayer::~OctomapServerMultilayer()
@@ -102,7 +98,6 @@ OctomapServerMultilayer::~OctomapServerMultilayer()
   {
     delete m_multiMapPub[i];
   }
-
 }
 
 void OctomapServerMultilayer::handlePreNodeTraversal(const ros::Time& rostime)
@@ -144,9 +139,6 @@ void OctomapServerMultilayer::handlePreNodeTraversal(const ros::Time& rostime)
   m_multiGridmap.at(2).z = (maxArmHeight + minArmHeight) / 2.0;
 
 
-
-
-
   // TODO: also clear multilevel maps in BBX region (see OctomapServer.cpp)?
 
   bool mapInfoChanged = mapChanged(gridmapInfo, m_gridmap.info);
@@ -172,8 +164,7 @@ void OctomapServerMultilayer::handlePreNodeTraversal(const ros::Time& rostime)
 
 void OctomapServerMultilayer::handlePostNodeTraversal(const ros::Time& rostime)
 {
-
-  // TODO: calc tall / short obs. cells for arm layer, => temp arm layer
+// TODO: calc tall / short obs. cells for arm layer, => temp arm layer
 //  std::vector<int> shortObsCells;
 //  for(unsigned int i=0; i<arm_map.data.size(); i++){
 //    if(temp_arm_map.data[i] == 0){
@@ -208,14 +199,12 @@ void OctomapServerMultilayer::handlePostNodeTraversal(const ros::Time& rostime)
 //    arm_map.data[tallObsCells[i]] = 101;
 
 
-
   OctomapServer::handlePostNodeTraversal(rostime);
 
   for (unsigned i = 0; i < m_multiMapPub.size(); ++i)
   {
     m_multiMapPub[i]->publish(m_multiGridmap.at(i).map);
   }
-
 }
 void OctomapServerMultilayer::update2DMap(const OcTreeT::iterator& it, bool occupied)
 {
@@ -252,7 +241,6 @@ void OctomapServerMultilayer::update2DMap(const OcTreeT::iterator& it, bool occu
           m_multiGridmap[i].map.data[idx] = 0;
       }
     }
-
   }
   else
   {
@@ -284,11 +272,5 @@ void OctomapServerMultilayer::update2DMap(const OcTreeT::iterator& it, bool occu
       }
     }
   }
-
-
 }
-
-}
-
-
-
+}  // namespace octomap_server
