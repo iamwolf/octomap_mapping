@@ -29,15 +29,16 @@
 #ifndef OCTOMAP_SERVER_OCTOMAPSERVERMULTILAYER_H
 #define OCTOMAP_SERVER_OCTOMAPSERVERMULTILAYER_H
 
+#include <string>
+#include <vector>
 #include <octomap_server/OctomapServer.h>
 
 namespace octomap_server
 {
 class OctomapServerMultilayer : public OctomapServer
 {
-
 public:
-  OctomapServerMultilayer(ros::NodeHandle private_nh_ = ros::NodeHandle("~"));
+  explicit OctomapServerMultilayer(ros::NodeHandle private_nh_ = ros::NodeHandle("~"));
   virtual ~OctomapServerMultilayer();
 
 protected:
@@ -67,10 +68,7 @@ protected:
   std::vector<double> m_armLinkOffsets;
 
   MultilevelGrid m_multiGridmap;
-
-
 };
-}
+}  // namespace octomap_server
 
-#endif
-
+#endif  // OCTOMAP_SERVER_OCTOMAPSERVERMULTILAYER_H
