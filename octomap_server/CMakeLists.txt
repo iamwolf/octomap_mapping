@@ -100,5 +100,5 @@ install(DIRECTORY launch/
 install(FILES nodelet_plugins.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
-set(ROSLINT_CPP_OPTS "--filter=-whitespace/line_length,-whitespace/comments")
+set(ROSLINT_CPP_OPTS "--filter=-whitespace/line_length,-whitespace/comments,-readability/todo")
 roslint_cpp()
