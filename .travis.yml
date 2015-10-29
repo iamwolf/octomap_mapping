@@ -21,6 +21,7 @@ install:
   - rosdep update
   # Use rosdep to install all dependencies (including ROS itself)
   - rosdep install --from-paths ./ -i -y --rosdistro $CI_ROS_DISTRO
+  - sudo apt-get install -qq -y ros-indigo-roslint
 script:
   - source /opt/ros/$CI_ROS_DISTRO/setup.bash
   - mkdir -p $CATKIN_WS_SRC
