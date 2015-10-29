@@ -35,24 +35,29 @@
 
 using namespace octomap_server;
 
-int main(int argc, char** argv){
+int main(int argc, char** argv)
+{
   ros::init(argc, argv, "octomap_tracking_server");
   std::string mapFilename("");
 
-  if (argc > 2 || (argc == 2 && std::string(argv[1]) == "-h")){
-	  ROS_ERROR("%s", USAGE);
-	  exit(-1);
+  if (argc > 2 || (argc == 2 && std::string(argv[1]) == "-h"))
+  {
+    ROS_ERROR("%s", USAGE);
+    exit(-1);
   }
 
   if (argc == 2)
-	  mapFilename = std::string(argv[1]);
+    mapFilename = std::string(argv[1]);
 
-  try{
-	  TrackingOctomapServer ms(mapFilename);
-	  ros::spin();
-  }catch(std::runtime_error& e){
-	  ROS_ERROR("octomap_server exception: %s", e.what());
-	  return -1;
+  try
+  {
+    TrackingOctomapServer ms(mapFilename);
+    ros::spin();
+  }
+  catch (std::runtime_error& e)
+  {
+    ROS_ERROR("octomap_server exception: %s", e.what());
+    return -1;
   }
 
   return 0;

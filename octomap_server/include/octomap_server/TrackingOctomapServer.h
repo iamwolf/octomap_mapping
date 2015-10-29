@@ -32,9 +32,11 @@
 
 #include "octomap_server/OctomapServer.h"
 
-namespace octomap_server {
+namespace octomap_server
+{
 
-class TrackingOctomapServer: public OctomapServer {
+class TrackingOctomapServer: public OctomapServer
+{
 public:
   TrackingOctomapServer(const std::string& filename = "");
   virtual ~TrackingOctomapServer();

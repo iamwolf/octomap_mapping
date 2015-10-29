@@ -36,12 +36,13 @@
 using octomap_msgs::GetOctomap;
 
 #define USAGE "\nUSAGE: octomap_server_static <mapfile.[bt|ot]>\n" \
-		"  mapfile.bt: OctoMap filename to be loaded (.bt: binary tree, .ot: general octree)\n"
+    "  mapfile.bt: OctoMap filename to be loaded (.bt: binary tree, .ot: general octree)\n"
 
 using namespace std;
 using namespace octomap;
 
-class OctomapServerStatic{
+class OctomapServerStatic
+{
 public:
   OctomapServerStatic(const std::string& filename)
     : m_octree(NULL), m_worldFrameId("/map")
@@ -52,33 +53,41 @@ public:
 
 
     // open file:
-    if (filename.length() <= 3){
+    if (filename.length() <= 3)
+    {
       ROS_ERROR("Octree file does not have .ot extension");
       exit(1);
     }
 
-    std::string suffix = filename.substr(filename.length()-3, 3);
+    std::string suffix = filename.substr(filename.length() - 3, 3);
 
     // .bt files only as OcTree, all other classes need to be in .ot files:
-    if (suffix == ".bt"){
+    if (suffix == ".bt")
+    {
       OcTree* octree = new OcTree(filename);
 
       m_octree = octree;
-    } else if (suffix == ".ot"){
+    }
+    else if (suffix == ".ot")
+    {
       AbstractOcTree* tree = AbstractOcTree::read(filename);
-      if (!tree){
+      if (!tree)
+      {
         ROS_ERROR("Could not read octree from file");
         exit(1);
       }
 
       m_octree = dynamic_cast<AbstractOccupancyOcTree*>(tree);
 
-    } else{
+    }
+    else
+    {
       ROS_ERROR("Octree file does not have .bt or .ot extension");
       exit(1);
     }
 
-    if (!m_octree ){
+    if (!m_octree)
+    {
       ROS_ERROR("Could not read right octree class in file");
       exit(1);
     }
@@ -92,7 +101,8 @@ public:
 
   }
 
-  ~OctomapServerStatic(){
+  ~OctomapServerStatic()
+  {
 
 
   }
@@ -110,7 +120,7 @@ public:
   }
 
   bool octomapFullSrv(GetOctomap::Request  &req,
-                                     GetOctomap::Response &res)
+                      GetOctomap::Response &res)
   {
     ROS_INFO("Sending full map data on service request");
     res.map.header.frame_id = m_worldFrameId;
@@ -131,21 +141,26 @@ private:
 
 };
 
-int main(int argc, char** argv){
+int main(int argc, char** argv)
+{
   ros::init(argc, argv, "octomap_server_static");
   std::string mapFilename("");
 
   if (argc == 2)
     mapFilename = std::string(argv[1]);
-  else{
+  else
+  {
     ROS_ERROR("%s", USAGE);
     exit(1);
   }
 
-  try{
+  try
+  {
     OctomapServerStatic ms(mapFilename);
     ros::spin();
-  }catch(std::runtime_error& e){
+  }
+  catch (std::runtime_error& e)
+  {
     ROS_ERROR("octomap_server_static exception: %s", e.what());
     exit(2);
   }

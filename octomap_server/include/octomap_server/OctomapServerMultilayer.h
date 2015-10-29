@@ -31,15 +31,18 @@
 
 #include <octomap_server/OctomapServer.h>
 
-namespace octomap_server {
-class OctomapServerMultilayer : public OctomapServer{
+namespace octomap_server
+{
+class OctomapServerMultilayer : public OctomapServer
+{
 
 public:
   OctomapServerMultilayer(ros::NodeHandle private_nh_ = ros::NodeHandle("~"));
   virtual ~OctomapServerMultilayer();
 
 protected:
-  struct ProjectedMap{
+  struct ProjectedMap
+  {
     double minZ;
     double maxZ;
     double z; // for visualization
