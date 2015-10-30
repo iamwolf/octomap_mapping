@@ -40,8 +40,8 @@ using octomap_msgs::GetOctomap;
                 "  -f: Query for the full occupancy octree, instead of just the compact binary one\n" \
     "  mapfile.bt: filename of map to be saved (.bt: binary tree, .ot: general octree)\n"
 
-using std;
-using octomap;
+using namespace std;
+using namespace octomap;
 
 class MapSaver
 {

@@ -34,7 +34,7 @@
 #define USAGE "\nUSAGE: octomap_server_multilayer <map.bt>\n" \
     "  map.bt: inital octomap 3D map file to read\n"
 
-using octomap_server;
+using namespace octomap_server;
 
 int main(int argc, char** argv)
 {

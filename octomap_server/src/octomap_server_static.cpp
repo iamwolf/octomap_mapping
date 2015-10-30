@@ -39,8 +39,8 @@ using octomap_msgs::GetOctomap;
 #define USAGE "\nUSAGE: octomap_server_static <mapfile.[bt|ot]>\n" \
     "  mapfile.bt: OctoMap filename to be loaded (.bt: binary tree, .ot: general octree)\n"
 
-using std;
-using octomap;
+using namespace std;
+using namespace octomap;
 
 class OctomapServerStatic
 {

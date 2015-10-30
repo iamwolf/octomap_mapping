@@ -31,7 +31,7 @@
 #include <vector>
 #include <octomap_server/OctomapServerMultilayer.h>
 
-using octomap;
+using namespace octomap;
 
 namespace octomap_server
 {
