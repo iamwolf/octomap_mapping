@@ -27,20 +27,22 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+#include <string>
 #include <ros/ros.h>
 #include <octomap_server/OctomapServerMultilayer.h>
 
 #define USAGE "\nUSAGE: octomap_server_multilayer <map.bt>\n" \
-		"  map.bt: inital octomap 3D map file to read\n"
+    "  map.bt: inital octomap 3D map file to read\n"
 
 using namespace octomap_server;
 
-int main(int argc, char** argv){
+int main(int argc, char** argv)
+{
   ros::init(argc, argv, "octomap_server_multilayer");
   std::string mapFilename("");
 
-  if (argc > 2 || (argc == 2 && std::string(argv[1]) == "-h")){
+  if (argc > 2 || (argc == 2 && std::string(argv[1]) == "-h"))
+  {
     ROS_ERROR("%s", USAGE);
     exit(-1);
   }
@@ -49,9 +51,11 @@ int main(int argc, char** argv){
   OctomapServerMultilayer server;
   ros::spinOnce();
 
-  if (argc == 2){
+  if (argc == 2)
+  {
     mapFilename = std::string(argv[1]);
-    if (!server.openFile(mapFilename)){
+    if (!server.openFile(mapFilename))
+    {
       ROS_ERROR("Could not open file %s", mapFilename.c_str());
       exit(1);
     }
@@ -60,9 +64,12 @@ int main(int argc, char** argv){
 
 
 
-  try{
+  try
+  {
     ros::spin();
-  }catch(std::runtime_error& e){
+  }
+  catch (std::runtime_error& e)
+  {
     ROS_ERROR("octomap_server_multilayer exception: %s", e.what());
     return -1;
   }

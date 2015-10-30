@@ -55,6 +55,6 @@ private:
   boost::shared_ptr<OctomapServer> server_;
 };
 
-} // namespace
+}  // namespace octomap_server
 
 PLUGINLIB_DECLARE_CLASS(octomap_server, OctomapServerNodelet, octomap_server::OctomapServerNodelet, nodelet::Nodelet);

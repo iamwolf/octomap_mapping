@@ -30,13 +30,16 @@
 #ifndef OCTOMAP_SERVER_TRACKINGOCTOMAPSERVER_H_
 #define OCTOMAP_SERVER_TRACKINGOCTOMAPSERVER_H_
 
+#include <string>
 #include "octomap_server/OctomapServer.h"
 
-namespace octomap_server {
+namespace octomap_server
+{
 
-class TrackingOctomapServer: public OctomapServer {
+class TrackingOctomapServer: public OctomapServer
+{
 public:
-  TrackingOctomapServer(const std::string& filename = "");
+  explicit TrackingOctomapServer(const std::string& filename = "");
   virtual ~TrackingOctomapServer();
 
   void trackCallback(sensor_msgs::PointCloud2Ptr cloud);
@@ -55,5 +58,5 @@ protected:
   ros::Subscriber subFreeChanges;
 };
 
-} /* namespace octomap */
-#endif /* TRACKINGOCTOMAPSERVER_H_ */
+}  // namespace octomap_server
+#endif  // OCTOMAP_SERVER_TRACKINGOCTOMAPSERVER_H

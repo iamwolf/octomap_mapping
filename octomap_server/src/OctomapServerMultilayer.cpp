@@ -27,18 +27,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <algorithm>
+#include <vector>
 #include <octomap_server/OctomapServerMultilayer.h>
 
 using namespace octomap;
 
-namespace octomap_server{
-
-
-
-OctomapServerMultilayer::OctomapServerMultilayer(ros::NodeHandle private_nh_)
-: OctomapServer(private_nh_)
+namespace octomap_server
 {
-
+OctomapServerMultilayer::OctomapServerMultilayer(ros::NodeHandle private_nh_)
+  : OctomapServer(private_nh_)
+{
   // TODO: callback for arm_navigation attached objects was removed, is
   // there a replacement functionality?
 
@@ -64,7 +63,8 @@ OctomapServerMultilayer::OctomapServerMultilayer(ros::NodeHandle private_nh_)
   m_multiGridmap.push_back(m);
 
 
-  for (unsigned i = 0; i < m_multiGridmap.size(); ++i){
+  for (unsigned i = 0; i < m_multiGridmap.size(); ++i)
+  {
     ros::Publisher* pub = new ros::Publisher(m_nh.advertise<nav_msgs::OccupancyGrid>(m_multiGridmap.at(i).name, 5, m_latchedTopics));
     m_multiMapPub.push_back(pub);
   }
@@ -90,18 +90,18 @@ OctomapServerMultilayer::OctomapServerMultilayer(ros::NodeHandle private_nh_)
   m_armLinkOffsets.push_back(0.16);
   m_armLinks.push_back("r_wrist_flex_link");
   m_armLinkOffsets.push_back(0.05);
-
-
 }
 
-OctomapServerMultilayer::~OctomapServerMultilayer(){
-  for (unsigned i = 0; i < m_multiMapPub.size(); ++i){
+OctomapServerMultilayer::~OctomapServerMultilayer()
+{
+  for (unsigned i = 0; i < m_multiMapPub.size(); ++i)
+  {
     delete m_multiMapPub[i];
   }
-
 }
 
-void OctomapServerMultilayer::handlePreNodeTraversal(const ros::Time& rostime){
+void OctomapServerMultilayer::handlePreNodeTraversal(const ros::Time& rostime)
+{
   // multilayer server always publishes 2D maps:
   m_publish2DMap = true;
   nav_msgs::MapMetaData gridmapInfo = m_gridmap.info;
@@ -120,49 +120,51 @@ void OctomapServerMultilayer::handlePreNodeTraversal(const ros::Time& rostime){
   double minArmHeight = 2.0;
   double maxArmHeight = 0.0;
 
-  for (unsigned i = 0; i < m_armLinks.size(); ++i){
+  for (unsigned i = 0; i < m_armLinks.size(); ++i)
+  {
     vin.header.frame_id = m_armLinks[i];
     geometry_msgs::PointStamped vout;
     const bool found_trans =
-        m_tfListener.waitForTransform("base_footprint", m_armLinks.at(i),
-                                      ros::Time(0), ros::Duration(1.0));
+      m_tfListener.waitForTransform("base_footprint", m_armLinks.at(i),
+                                    ros::Time(0), ros::Duration(1.0));
     ROS_ASSERT_MSG(found_trans, "Timed out waiting for transform to %s",
                    m_armLinks[i].c_str());
-    m_tfListener.transformPoint("base_footprint",vin,vout);
+    m_tfListener.transformPoint("base_footprint", vin, vout);
     maxArmHeight = std::max(maxArmHeight, vout.point.z + (m_armLinkOffsets.at(i) + link_padding));
     minArmHeight = std::min(minArmHeight, vout.point.z - (m_armLinkOffsets.at(i) + link_padding));
   }
   ROS_INFO("Arm layer interval adjusted to (%f,%f)", minArmHeight, maxArmHeight);
   m_multiGridmap.at(2).minZ = minArmHeight;
   m_multiGridmap.at(2).maxZ = maxArmHeight;
-  m_multiGridmap.at(2).z = (maxArmHeight+minArmHeight)/2.0;
-
-
-
+  m_multiGridmap.at(2).z = (maxArmHeight + minArmHeight) / 2.0;
 
 
   // TODO: also clear multilevel maps in BBX region (see OctomapServer.cpp)?
 
   bool mapInfoChanged = mapChanged(gridmapInfo, m_gridmap.info);
 
-  for (MultilevelGrid::iterator it = m_multiGridmap.begin(); it != m_multiGridmap.end(); ++it){
+  for (MultilevelGrid::iterator it = m_multiGridmap.begin(); it != m_multiGridmap.end(); ++it)
+  {
     it->map.header = m_gridmap.header;
     it->map.info = m_gridmap.info;
     it->map.info.origin.position.z = it->z;
-    if (m_projectCompleteMap){
+    if (m_projectCompleteMap)
+    {
       ROS_INFO("Map resolution changed, rebuilding complete 2D maps");
       it->map.data.clear();
       // init to unknown:
       it->map.data.resize(it->map.info.width * it->map.info.height, -1);
-    } else if (mapInfoChanged){
+    }
+    else if (mapInfoChanged)
+    {
       adjustMapData(it->map, gridmapInfo);
     }
   }
 }
 
-void OctomapServerMultilayer::handlePostNodeTraversal(const ros::Time& rostime){
-
-  // TODO: calc tall / short obs. cells for arm layer, => temp arm layer
+void OctomapServerMultilayer::handlePostNodeTraversal(const ros::Time& rostime)
+{
+// TODO: calc tall / short obs. cells for arm layer, => temp arm layer
 //  std::vector<int> shortObsCells;
 //  for(unsigned int i=0; i<arm_map.data.size(); i++){
 //    if(temp_arm_map.data[i] == 0){
@@ -197,58 +199,70 @@ void OctomapServerMultilayer::handlePostNodeTraversal(const ros::Time& rostime){
 //    arm_map.data[tallObsCells[i]] = 101;
 
 
-
   OctomapServer::handlePostNodeTraversal(rostime);
 
-  for (unsigned i = 0; i < m_multiMapPub.size(); ++i){
+  for (unsigned i = 0; i < m_multiMapPub.size(); ++i)
+  {
     m_multiMapPub[i]->publish(m_multiGridmap.at(i).map);
   }
-
 }
-void OctomapServerMultilayer::update2DMap(const OcTreeT::iterator& it, bool occupied){
+void OctomapServerMultilayer::update2DMap(const OcTreeT::iterator& it, bool occupied)
+{
   double z = it.getZ();
-  double s2 = it.getSize()/2.0;
+  double s2 = it.getSize() / 2.0;
 
   // create a mask on which maps to update:
   std::vector<bool> inMapLevel(m_multiGridmap.size(), false);
-  for (unsigned i = 0; i < m_multiGridmap.size(); ++i){
-    if (z+s2 >= m_multiGridmap[i].minZ && z-s2 <= m_multiGridmap[i].maxZ){
+  for (unsigned i = 0; i < m_multiGridmap.size(); ++i)
+  {
+    if (z + s2 >= m_multiGridmap[i].minZ && z - s2 <= m_multiGridmap[i].maxZ)
+    {
       inMapLevel[i] = true;
     }
   }
 
-  if (it.getDepth() == m_maxTreeDepth){
+  if (it.getDepth() == m_maxTreeDepth)
+  {
     unsigned idx = mapIdx(it.getKey());
     if (occupied)
       m_gridmap.data[idx] = 100;
-    else if (m_gridmap.data[idx] == -1){
+    else if (m_gridmap.data[idx] == -1)
+    {
       m_gridmap.data[idx] = 0;
     }
 
-    for (unsigned i = 0; i < inMapLevel.size(); ++i){
-      if (inMapLevel[i]){
+    for (unsigned i = 0; i < inMapLevel.size(); ++i)
+    {
+      if (inMapLevel[i])
+      {
         if (occupied)
           m_multiGridmap[i].map.data[idx] = 100;
         else if (m_multiGridmap[i].map.data[idx] == -1)
           m_multiGridmap[i].map.data[idx] = 0;
       }
     }
-
-  } else {
+  }
+  else
+  {
     int intSize = 1 << (m_treeDepth - it.getDepth());
-    octomap::OcTreeKey minKey=it.getIndexKey();
-    for(int dx=0; dx < intSize; dx++){
-      int i = (minKey[0]+dx - m_paddedMinKey[0])/m_multires2DScale;
-      for(int dy=0; dy < intSize; dy++){
-        unsigned idx = mapIdx(i, (minKey[1]+dy - m_paddedMinKey[1])/m_multires2DScale);
+    octomap::OcTreeKey minKey = it.getIndexKey();
+    for (int dx = 0; dx < intSize; dx++)
+    {
+      int i = (minKey[0] + dx - m_paddedMinKey[0]) / m_multires2DScale;
+      for (int dy = 0; dy < intSize; dy++)
+      {
+        unsigned idx = mapIdx(i, (minKey[1] + dy - m_paddedMinKey[1]) / m_multires2DScale);
         if (occupied)
           m_gridmap.data[idx] = 100;
-        else if (m_gridmap.data[idx] == -1){
+        else if (m_gridmap.data[idx] == -1)
+        {
           m_gridmap.data[idx] = 0;
         }
 
-        for (unsigned i = 0; i < inMapLevel.size(); ++i){
-          if (inMapLevel[i]){
+        for (unsigned i = 0; i < inMapLevel.size(); ++i)
+        {
+          if (inMapLevel[i])
+          {
             if (occupied)
               m_multiGridmap[i].map.data[idx] = 100;
             else if (m_multiGridmap[i].map.data[idx] == -1)
@@ -258,11 +272,5 @@ void OctomapServerMultilayer::update2DMap(const OcTreeT::iterator& it, bool occu
       }
     }
   }
-
-
 }
-
-}
-
-
-
+}  // namespace octomap_server
