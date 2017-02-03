@@ -68,7 +68,8 @@ OctomapServer::OctomapServer(ros::NodeHandle private_nh_)
   m_groundFilterDistance(0.04), m_groundFilterAngle(0.15), m_groundFilterPlaneDistance(0.07),
   m_compressMap(true),
   m_incrementalUpdate(false),
-  m_initConfig(true)
+  m_initConfig(true),
+  m_integrateSensorMeasurements(true)
 {
   double probHit, probMiss, thresMin, thresMax;
 
@@ -108,6 +109,10 @@ OctomapServer::OctomapServer(ros::NodeHandle private_nh_)
   private_nh.param("sensor_model/max", thresMax, 0.97);
   private_nh.param("compress_map", m_compressMap, m_compressMap);
   private_nh.param("incremental_2D_projection", m_incrementalUpdate, m_incrementalUpdate);
+
+  private_nh.param("integrate_sensor_measurements",
+                   m_integrateSensorMeasurements,
+                   m_integrateSensorMeasurements);
 
   if (m_filterGroundPlane && (m_pointcloudMinZ > 0.0 || m_pointcloudMaxZ < 0.0)){
     ROS_WARN_STREAM("You enabled ground filtering but incoming pointclouds will be pre-filtered in ["
@@ -260,8 +265,10 @@ bool OctomapServer::openFile(const std::string& filename){
 }
 
 void OctomapServer::insertCloudCallback(const sensor_msgs::PointCloud2::ConstPtr& cloud){
-  ros::WallTime startTime = ros::WallTime::now();
+  if (!m_integrateSensorMeasurements)
+    return;
 
+  ros::WallTime startTime = ros::WallTime::now();
 
   //
   // ground filtering in base frame
@@ -1135,6 +1142,7 @@ void OctomapServer::reconfigureCallback(octomap_server::OctomapServerConfig& con
     m_filterGroundPlane         = config.filter_ground;
     m_compressMap               = config.compress_map;
     m_incrementalUpdate         = config.incremental_2D_projection;
+    m_integrateSensorMeasurements = config.integrate_sensor_measurements;
 
     // Parameters with a namespace require an special treatment at the beginning, as dynamic reconfigure
     // will overwrite them because the server is not able to match parameters' names.

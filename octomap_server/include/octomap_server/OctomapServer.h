@@ -248,6 +248,8 @@ protected:
 
   bool m_initConfig;
 
+  bool m_integrateSensorMeasurements;
+
   // downprojected 2D map:
   bool m_incrementalUpdate;
   nav_msgs::OccupancyGrid m_gridmap;
